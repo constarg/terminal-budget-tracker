@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.18)
-project(budget_tracker C)
+project(budget-tracker C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(budget_tracker main.c)
+add_executable(budget-tracker main.c commands/commands.c commands/include/commands.h)
+
+include_directories(
+	commands/include
+)
