@@ -42,18 +42,44 @@ struct command commands[] =
 	{.c_name = NULL}
 };
 
-// Find the command that the user has colled.
+/**
+ * Returns the simplified version of a command.
+ * For example available_amount is the full 
+ * command name and aa is the simplified.
+ * @param c_name The command name.
+ * @return a pointer to the simplified name. 
+ */
+static inline char *get_command_shortcut(const char *c_name)
+{
+	static char shortcut[2];
+	char *tmp = strstr(c_name, "_");
+	shortcut[0] = c_name[0];
+	shortcut[1] = (tmp == NULL)? '\0':*(tmp + 1) ;
+
+	return (tmp == NULL)? NULL:shortcut;
+}
+
+/**
+ * Finds the command the has been requested.
+ * @param c_name The name of the requested command.
+ * @return an number witch refers to the array of commands on success.
+ * On error -1 is returned.
+ */
 static inline int find_command(const char *c_name)
 {
 	if ((c_name[0] | c_name[1]) != '-') return -1;
 
 	int cmd;
+	char *shortcut;
 	const char *tmp = (char *) c_name + 2;
 	for (cmd = 0; commands[cmd].c_name; cmd++)
+	{
+		shortcut = get_command_shortcut(commands[cmd].c_name);
 		if (!strcmp(commands[cmd].c_name, tmp)) return cmd;
-
-	if (!commands[cmd].c_name)
-		return -1;
+		if (!shortcut) continue;
+		if (!strcmp(shortcut, tmp)) return cmd;
+	}
+	if (!commands[cmd].c_name) return -1;
 }
 
 int main(int argc, char **argv)
