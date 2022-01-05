@@ -45,6 +45,8 @@ struct command commands[] =
 // Find the command that the user has colled.
 static inline int find_command(const char *c_name)
 {
+	if ((c_name[0] | c_name[1]) != '-') return -1;
+
 	int cmd;
 	const char *tmp = (char *) c_name + 2;
 	for (cmd = 0; commands[cmd].c_name; cmd++)
@@ -68,7 +70,7 @@ int main(int argc, char **argv)
 	cmd_index = find_command(argv[1]);
 
 	if (commands[cmd_index].c_argc - (argc - 2) < 0
-		|| cmd_index == -1)
+	    || cmd_index == -1)
 	{
 		help_command();
 		return 0;
