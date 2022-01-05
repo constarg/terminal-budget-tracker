@@ -8,7 +8,7 @@
 #include <stdio.h>
 #endif
 
-#define DEFINE_COMMAND(COMMAND) { #COMMAND, (void (*)(void)) COMMAND ## _command }
+#define DEFINE_COMMAND(COMMAND, ARGC) { #COMMAND, (void (*)(void)) &COMMAND ## _command, ARGC }
 
 
 struct command {
@@ -20,6 +20,23 @@ struct command {
 
 struct command commands[] = 
 {
+	DEFINE_COMMAND(available_amount, 			0),
+	DEFINE_COMMAND(available_category_amount,	1),
+	DEFINE_COMMAND(set_budget, 					1),
+	DEFINE_COMMAND(change_budget,				1),
+	DEFINE_COMMAND(add_category, 				2),
+	DEFINE_COMMAND(change_budget, 				2),
+	DEFINE_COMMAND(delete_category, 			1),
+	DEFINE_COMMAND(show_statistics, 			0),
+	DEFINE_COMMAND(show_prefered_daily_spend, 	0),
+	DEFINE_COMMAND(show_future_spend, 			0),
+	DEFINE_COMMAND(show_categories, 			0),
+	DEFINE_COMMAND(show_category, 				1),
+	DEFINE_COMMAND(show_merchant, 				1),
+	DEFINE_COMMAND(show_merchants, 				0),
+	DEFINE_COMMAND(show_all_expenses, 			2),
+	DEFINE_COMMAND(add_expenses, 				3),
+	DEFINE_COMMAND(associate_merchant, 			2),
 	{.c_name = NULL}
 };
 
