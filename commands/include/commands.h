@@ -30,14 +30,14 @@ void show_merchant_command(const char *merchant);
 
 void show_merchants_command(void);
 
-void show_all_expenses_command(int type, const char *name);
+void show_all_expenses_command(const char *type, const char *name);
 
 void add_expenses_command(const char *merchant, char *amount,
 				  		  const char *date);
 
 void associate_merchant_command(const char *merchant, const char *category);
 
-
+void help();
 
 #endif
 

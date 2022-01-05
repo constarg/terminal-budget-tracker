@@ -1,9 +1,14 @@
 #include <commands.h>
+#include <stdio.h>
 
+void help()
+{
+
+}
 
 void available_amount_command(void) 
 {
-
+	printf("HELLO\n");
 }
 
 void available_category_amount_command(const char *category)
@@ -71,7 +76,7 @@ void show_merchants_command(void)
 
 }
 
-void show_all_expenses_command(int type, const char *name)
+void show_all_expenses_command(const char *type, const char *name)
 {
 
 }
