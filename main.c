@@ -18,6 +18,7 @@ struct command {
 };
 
 
+// Available commands.
 struct command commands[] = 
 {
 	DEFINE_COMMAND(available_amount, 			0),
@@ -36,10 +37,12 @@ struct command commands[] =
 	DEFINE_COMMAND(show_merchants,				0),
 	DEFINE_COMMAND(show_all_expenses,			2),
 	DEFINE_COMMAND(add_expenses,				3),
+	DEFINE_COMMAND(help,						0),
 	DEFINE_COMMAND(associate_merchant,			2),
 	{.c_name = NULL}
 };
 
+// Find the command that the user has colled.
 static inline int find_command(const char *c_name)
 {
 	int cmd;
@@ -57,7 +60,7 @@ int main(int argc, char **argv)
 #ifdef linux
 	if (argc < 2)
 	{
-		// TODO - Print help.
+		help_command();
 		return 0;
 	}
 
@@ -67,11 +70,12 @@ int main(int argc, char **argv)
 	if (commands[cmd_index].c_argc - (argc - 2) < 0
 		|| cmd_index == -1)
 	{
-		// TODO - Print Help.
+		help_command();
 		return 0;
 	}
 	else 
 	{
+		// Execute the command.
 		if (commands[cmd_index].c_argc == 0) (commands[cmd_index].c_exec)();
 		else if (commands[cmd_index].c_argc == 1)
 			((void (*)(const char *)) commands[cmd_index].c_exec)(argv[2]);
