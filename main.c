@@ -19,26 +19,26 @@ struct command {
 
 
 // Available commands.
-struct command commands[] = 
+struct command commands[] =
 {
-	DEFINE_COMMAND(available_amount, 			0),
-	DEFINE_COMMAND(available_category_amount,	1),
-	DEFINE_COMMAND(set_budget,					1),
-	DEFINE_COMMAND(change_budget,				1),
-	DEFINE_COMMAND(add_category, 				2),
-	DEFINE_COMMAND(change_budget,				2),
-	DEFINE_COMMAND(delete_category,				1),
-	DEFINE_COMMAND(show_statistics,				0),
-	DEFINE_COMMAND(show_prefered_daily_spend,	0),
-	DEFINE_COMMAND(show_future_spend,			0),
-	DEFINE_COMMAND(show_categories,				0),
-	DEFINE_COMMAND(show_category,				1),
-	DEFINE_COMMAND(show_merchant,				1),
-	DEFINE_COMMAND(show_merchants,				0),
-	DEFINE_COMMAND(show_all_expenses,			2),
-	DEFINE_COMMAND(add_expenses,				3),
-	DEFINE_COMMAND(help,						0),
-	DEFINE_COMMAND(associate_merchant,			2),
+	DEFINE_COMMAND(available_amount,	  0),
+	DEFINE_COMMAND(available_category_amount, 1),
+	DEFINE_COMMAND(set_budget,		  1),
+	DEFINE_COMMAND(change_budget,		  1),
+	DEFINE_COMMAND(add_category,		  2),
+	DEFINE_COMMAND(change_budget,		  2),
+	DEFINE_COMMAND(delete_category,		  1),
+	DEFINE_COMMAND(show_statistics,		  0),
+	DEFINE_COMMAND(show_prefered_daily_spend, 0),
+	DEFINE_COMMAND(show_future_spend,   	  0),
+	DEFINE_COMMAND(show_categories,		  0),
+	DEFINE_COMMAND(show_category,		  1),
+	DEFINE_COMMAND(show_merchant,		  1),
+	DEFINE_COMMAND(show_merchants,		  0),
+	DEFINE_COMMAND(show_all_expenses,	  2),
+	DEFINE_COMMAND(add_expenses,		  3),
+	DEFINE_COMMAND(help,			  0),
+	DEFINE_COMMAND(associate_merchant,   	  2),
 	{.c_name = NULL}
 };
 
@@ -54,7 +54,7 @@ static inline int find_command(const char *c_name)
 		return -1;
 }
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
 
 #ifdef linux
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 		help_command();
 		return 0;
 	}
-	else 
+	else
 	{
 		// Execute the command.
 		if (commands[cmd_index].c_argc == 0) (commands[cmd_index].c_exec)();
@@ -83,9 +83,8 @@ int main(int argc, char **argv)
 			((void (*)(const char *, const char *)) commands[cmd_index].c_exec)(argv[2], argv[3]);
 		else if (commands[cmd_index].c_argc == 3)
 			((void (*)(const char *, const char *, const char *)) commands[cmd_index].c_exec)
-																	(argv[2], argv[3], argv[4]);
+									      (argv[2], argv[3], argv[4]);
 	}
-
 #else
 	printf("The oparation system is not compatible.");
 

@@ -37,7 +37,7 @@ void add_expenses_command(const char *merchant, char *amount,
 
 void associate_merchant_command(const char *merchant, const char *category);
 
-void help_command();
+void help_command(void);
 
 #endif
 

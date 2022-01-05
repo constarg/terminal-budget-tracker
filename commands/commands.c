@@ -1,7 +1,7 @@
 #include <commands.h>
 #include <stdio.h>
 
-void help()
+void help_command()
 {
 
 }
