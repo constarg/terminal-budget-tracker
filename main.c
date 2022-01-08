@@ -2,61 +2,61 @@
 #include <stdio.h>
 #include <string.h>
 #include <commands.h>
+#include <malloc.h>
 #endif
 
 #ifndef linux
 #include <stdio.h>
 #endif
 
-#define DEFINE_COMMAND(COMMAND, ARGC) { #COMMAND, (void (*)(void)) &COMMAND ## _command, ARGC }
+#define DEFINE_COMMAND(COMMAND, ARGC, ALIAS) { #COMMAND, (void (*)(void)) &COMMAND ## _command, ARGC, #ALIAS}
 
 
 struct command {
 	char *c_name;
 	void (*c_exec) (void);
 	int c_argc;
+	char *c_alias;
 };
 
 
 // Available commands.
 struct command commands[] =
 {
-	DEFINE_COMMAND(available_amount,	  0),
-	DEFINE_COMMAND(available_category_amount, 1),
-	DEFINE_COMMAND(set_budget,		  1),
-	DEFINE_COMMAND(change_budget,		  1),
-	DEFINE_COMMAND(add_category,		  2),
-	DEFINE_COMMAND(change_budget,		  2),
-	DEFINE_COMMAND(delete_category,		  1),
-	DEFINE_COMMAND(show_statistics,		  0),
-	DEFINE_COMMAND(show_prefered_daily_spend, 0),
-	DEFINE_COMMAND(show_future_spend,   	  0),
-	DEFINE_COMMAND(show_categories,		  0),
-	DEFINE_COMMAND(show_category,		  1),
-	DEFINE_COMMAND(show_merchant,		  1),
-	DEFINE_COMMAND(show_merchants,		  0),
-	DEFINE_COMMAND(show_all_expenses,	  2),
-	DEFINE_COMMAND(add_expenses,		  3),
-	DEFINE_COMMAND(help,			  0),
-	DEFINE_COMMAND(associate_merchant,   	  2),
+	DEFINE_COMMAND(available_amount,	  0, aam),
+	DEFINE_COMMAND(available_category_amount, 1, acm),
+	DEFINE_COMMAND(set_budget,		  1, sbt),
+	DEFINE_COMMAND(change_budget,		  1, cbt),
+	DEFINE_COMMAND(add_category,		  2, ac ),
+	DEFINE_COMMAND(delete_category,		  1, dc ),
+	DEFINE_COMMAND(show_statistics,		  0, st ),
+	DEFINE_COMMAND(show_prefered_daily_spend, 0, spd),
+	DEFINE_COMMAND(show_future_spend,   	  0, sfs),
+	DEFINE_COMMAND(show_categories,		  0, scs),
+	DEFINE_COMMAND(show_category,		  1, sc ),
+	DEFINE_COMMAND(show_merchant,		  1, sm ),
+	DEFINE_COMMAND(show_merchants,		  0, sms),
+	DEFINE_COMMAND(show_all_expenses,	  2, sae),
+	DEFINE_COMMAND(add_expenses,		  3, aes),
+	DEFINE_COMMAND(help,			  0, h  ),
+	DEFINE_COMMAND(associate_merchant,   	  2, amt),
 	{.c_name = NULL}
 };
 
-/**
- * Returns the simplified version of a command.
- * For example available_amount is the full 
- * command name and aa is the simplified.
- * @param c_name The command name.
- * @return a pointer to the simplified name. 
- */
-static inline char *get_command_shortcut(const char *c_name)
-{
-	static char shortcut[2];
-	char *tmp = strstr(c_name, "_");
-	shortcut[0] = c_name[0];
-	shortcut[1] = (tmp == NULL)? '\0':*(tmp + 1) ;
 
-	return (tmp == NULL)? NULL:shortcut;
+static inline char *replace_with_underscores(const char *c_name)
+{
+	char *tmp = calloc(strlen(c_name) + 1, sizeof(char));
+	if (tmp == NULL) return NULL;
+	
+	strcpy(tmp, c_name);
+	char *curr_minus = strstr(tmp, "-");
+	for (int i = 0; curr_minus; i++)
+	{
+		*curr_minus = '_';
+		curr_minus = strstr(tmp, "-");
+	}
+	return tmp;
 }
 
 /**
@@ -67,19 +67,36 @@ static inline char *get_command_shortcut(const char *c_name)
  */
 static inline int find_command(const char *c_name)
 {
-	if ((c_name[0] | c_name[1]) != '-') return -1;
+	if (c_name[0] != '-') return -1;
 
 	int cmd;
 	char *shortcut;
-	const char *tmp = (char *) c_name + 2;
+	char * traslated_name = replace_with_underscores(c_name);
+	if (traslated_name == NULL) return -1;
+
+	const char *full_c = traslated_name + 2;
+	const char *alias_c = traslated_name + 1;
 	for (cmd = 0; commands[cmd].c_name; cmd++)
 	{
-		shortcut = get_command_shortcut(commands[cmd].c_name);
-		if (!strcmp(commands[cmd].c_name, tmp)) return cmd;
-		if (!shortcut) continue;
-		if (!strcmp(shortcut, tmp)) return cmd;
+		// Recognize full name command.
+		if (!strcmp(commands[cmd].c_name, full_c)) 
+		{
+			free(traslated_name);
+			return cmd;
+		}
+		// Recognize alias command
+		else if (!strcmp(commands[cmd].c_alias, alias_c))
+		{
+			free(traslated_name);
+			return cmd; 
+		}
 	}
-	if (!commands[cmd].c_name) return -1;
+
+	if (!commands[cmd].c_name) 
+	{	
+		free(traslated_name);	
+		return -1;
+	}
 }
 
 int main(int argc, char **argv)

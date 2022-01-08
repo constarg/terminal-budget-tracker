@@ -8,7 +8,7 @@ void help_command()
 
 void available_amount_command(void) 
 {
-	printf("HELLO\n");
+
 }
 
 void available_category_amount_command(const char *category)
