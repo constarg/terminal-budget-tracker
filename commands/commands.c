@@ -3,7 +3,12 @@
 
 void help_command()
 {
+	const char help[] = "Usage: budget-tracker [OPTION]... [ARGS]...\n\n"
+			    "\t-aam, --available-amount\t\t Shows the available amount.\n"
+			    "\t-acm, --available-category-amount [cat]\t Shows the available amount"
+			    " in a specific category";
 
+	printf("%s\n", help);
 }
 
 void available_amount_command(void) 
